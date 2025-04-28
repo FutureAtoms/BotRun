@@ -1,0 +1,293 @@
+{
+  "projectName": "BotRun",
+  "projectDescription": "Create a simple, engaging infinite runner game using HTML5 Canvas with cute player character, dynamic backgrounds, increasing difficulty, and high score tracking.",
+  "lastTaskId": 9,
+  "tasks": [
+    {
+      "id": 2,
+      "title": "Refinement & Testing",
+      "description": "Polish gameplay, fix bugs, ensure browser compatibility.",
+      "status": "done",
+      "priority": "low",
+      "dependsOn": [
+        7
+      ],
+      "createdAt": "2025-04-25T18:37:15.734Z",
+      "updatedAt": "2025-04-25T18:46:50.062Z",
+      "subtasks": [],
+      "lastSubtaskIndex": 0,
+      "relatedFiles": [],
+      "activityLog": [
+        {
+          "timestamp": "2025-04-25T18:37:15.734Z",
+          "type": "log",
+          "message": "Task created with title: \"Refinement & Testing\""
+        },
+        {
+          "timestamp": "2025-04-25T18:42:30.508Z",
+          "type": "log",
+          "message": "Correcting dependency: Refinement depends on UI."
+        },
+        {
+          "timestamp": "2025-04-25T18:42:53.954Z",
+          "type": "log",
+          "message": "Retry Correcting dependency: Refinement depends on UI (4)."
+        },
+        {
+          "timestamp": "2025-04-25T18:46:50.062Z",
+          "type": "status",
+          "message": "Performed basic gameplay tuning: adjusted jump strength and added a visual jump effect."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Implement Data Persistence",
+      "description": "Save and load top 3 high scores using localStorage.",
+      "status": "done",
+      "priority": "medium",
+      "dependsOn": [
+        6
+      ],
+      "createdAt": "2025-04-25T18:37:17.007Z",
+      "updatedAt": "2025-04-25T18:46:01.325Z",
+      "subtasks": [],
+      "lastSubtaskIndex": 0,
+      "relatedFiles": [],
+      "activityLog": [
+        {
+          "timestamp": "2025-04-25T18:37:17.007Z",
+          "type": "log",
+          "message": "Task created with title: \"Implement Data Persistence\""
+        },
+        {
+          "timestamp": "2025-04-25T18:38:22.778Z",
+          "type": "log",
+          "message": "Correcting dependency: Data Persistence depends on Game Logic."
+        },
+        {
+          "timestamp": "2025-04-25T18:42:50.526Z",
+          "type": "log",
+          "message": "Retry Correcting dependency: Data Persistence depends on Game Logic (5)."
+        },
+        {
+          "timestamp": "2025-04-25T18:46:01.325Z",
+          "type": "status",
+          "message": "Implemented saving/loading top 3 high scores using localStorage and displaying them."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Implement UI",
+      "description": "Create start screen (name input), in-game score display, game over screen, and high score display.",
+      "status": "done",
+      "priority": "medium",
+      "dependsOn": [
+        5
+      ],
+      "createdAt": "2025-04-25T18:37:18.437Z",
+      "updatedAt": "2025-04-25T18:46:08.052Z",
+      "subtasks": [],
+      "lastSubtaskIndex": 0,
+      "relatedFiles": [],
+      "activityLog": [
+        {
+          "timestamp": "2025-04-25T18:37:18.437Z",
+          "type": "log",
+          "message": "Task created with title: \"Implement UI\""
+        },
+        {
+          "timestamp": "2025-04-25T18:42:29.076Z",
+          "type": "log",
+          "message": "Correcting dependency: UI depends on Game Logic and Data Persistence."
+        },
+        {
+          "timestamp": "2025-04-25T18:42:52.260Z",
+          "type": "log",
+          "message": "Retry Correcting dependency: UI depends on Game Logic (5) and Data Persistence (3)."
+        },
+        {
+          "timestamp": "2025-04-25T18:46:08.052Z",
+          "type": "status",
+          "message": "Verified that all UI elements (start/game-over screens, score displays, buttons) are implemented and functional based on previous tasks."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Implement Game Logic",
+      "description": "Add core game loop, collision detection, increasing speed, and score calculation.",
+      "status": "done",
+      "priority": "high",
+      "dependsOn": [
+        2,
+        3,
+        4
+      ],
+      "createdAt": "2025-04-25T18:37:19.779Z",
+      "updatedAt": "2025-04-25T18:45:21.556Z",
+      "subtasks": [],
+      "lastSubtaskIndex": 0,
+      "relatedFiles": [],
+      "activityLog": [
+        {
+          "timestamp": "2025-04-25T18:37:19.779Z",
+          "type": "log",
+          "message": "Task created with title: \"Implement Game Logic\""
+        },
+        {
+          "timestamp": "2025-04-25T18:38:21.305Z",
+          "type": "log",
+          "message": "Correcting dependency: Game Logic depends on Player, Environment, and Obstacles."
+        },
+        {
+          "timestamp": "2025-04-25T18:42:48.915Z",
+          "type": "log",
+          "message": "Retry Correcting dependency: Game Logic depends on Player (8), Environment (7), and Obstacles (6)."
+        },
+        {
+          "timestamp": "2025-04-25T18:45:21.556Z",
+          "type": "status",
+          "message": "Implemented collision detection (AABB), score calculation/display, and increasing game speed."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Implement Obstacles",
+      "description": "Create obstacle class, implement random spawning and movement.",
+      "status": "done",
+      "priority": "high",
+      "dependsOn": [
+        1
+      ],
+      "createdAt": "2025-04-25T18:37:21.037Z",
+      "updatedAt": "2025-04-25T18:44:45.037Z",
+      "subtasks": [],
+      "lastSubtaskIndex": 0,
+      "relatedFiles": [],
+      "activityLog": [
+        {
+          "timestamp": "2025-04-25T18:37:21.037Z",
+          "type": "log",
+          "message": "Task created with title: \"Implement Obstacles\""
+        },
+        {
+          "timestamp": "2025-04-25T18:38:19.976Z",
+          "type": "log",
+          "message": "Correcting dependency: Obstacles depend on HTML Setup."
+        },
+        {
+          "timestamp": "2025-04-25T18:42:46.698Z",
+          "type": "log",
+          "message": "Retry Correcting dependency: Obstacles depend on HTML Setup (9)."
+        },
+        {
+          "timestamp": "2025-04-25T18:44:45.037Z",
+          "type": "status",
+          "message": "Implemented Obstacle class, random spawning logic using deltaTime, and integrated into game loop."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Implement Environment",
+      "description": "Create scrolling background, ground, and dynamic clouds. Implement background changes.",
+      "status": "done",
+      "priority": "high",
+      "dependsOn": [
+        1
+      ],
+      "createdAt": "2025-04-25T18:37:22.320Z",
+      "updatedAt": "2025-04-25T18:44:07.008Z",
+      "subtasks": [],
+      "lastSubtaskIndex": 0,
+      "relatedFiles": [],
+      "activityLog": [
+        {
+          "timestamp": "2025-04-25T18:37:22.320Z",
+          "type": "log",
+          "message": "Task created with title: \"Implement Environment\""
+        },
+        {
+          "timestamp": "2025-04-25T18:38:18.581Z",
+          "type": "log",
+          "message": "Correcting dependency: Environment depends on HTML Setup."
+        },
+        {
+          "timestamp": "2025-04-25T18:42:43.770Z",
+          "type": "log",
+          "message": "Retry Correcting dependency: Environment depends on HTML Setup (9)."
+        },
+        {
+          "timestamp": "2025-04-25T18:44:07.008Z",
+          "type": "status",
+          "message": "Implemented scrolling clouds and dynamic background color transition."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Implement Player Character",
+      "description": "Create the Bot class, draw it with cute eyes, and implement jump mechanics.",
+      "status": "done",
+      "priority": "high",
+      "dependsOn": [
+        1
+      ],
+      "createdAt": "2025-04-25T18:37:24.552Z",
+      "updatedAt": "2025-04-25T18:43:26.517Z",
+      "subtasks": [],
+      "lastSubtaskIndex": 0,
+      "relatedFiles": [],
+      "activityLog": [
+        {
+          "timestamp": "2025-04-25T18:37:24.552Z",
+          "type": "log",
+          "message": "Task created with title: \"Implement Player Character\""
+        },
+        {
+          "timestamp": "2025-04-25T18:38:16.927Z",
+          "type": "log",
+          "message": "Correcting dependency: Player depends on HTML Setup."
+        },
+        {
+          "timestamp": "2025-04-25T18:42:42.200Z",
+          "type": "log",
+          "message": "Retry Correcting dependency: Player depends on HTML Setup (9)."
+        },
+        {
+          "timestamp": "2025-04-25T18:43:26.517Z",
+          "type": "status",
+          "message": "Implemented Player class, drawing, physics, jump input, and integrated into basic requestAnimationFrame loop."
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Setup HTML Structure",
+      "description": "Create the basic index.html file with a canvas element and link CSS/JS.",
+      "status": "done",
+      "priority": "high",
+      "dependsOn": [],
+      "createdAt": "2025-04-25T18:37:25.901Z",
+      "updatedAt": "2025-04-25T18:38:08.835Z",
+      "subtasks": [],
+      "lastSubtaskIndex": 0,
+      "relatedFiles": [],
+      "activityLog": [
+        {
+          "timestamp": "2025-04-25T18:37:25.901Z",
+          "type": "log",
+          "message": "Task created with title: \"Setup HTML Structure\""
+        },
+        {
+          "timestamp": "2025-04-25T18:38:08.835Z",
+          "type": "status",
+          "message": "Created index.html, style.css, and script.js with basic structure and stubs."
+        }
+      ]
+    }
+  ]
+}
