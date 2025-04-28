@@ -56,6 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const MAX_JUMP_HEIGHT_ESTIMATE = 180; // Approx max pixels player can jump above ground pos
     const INVINCIBILITY_DURATION = 21 * (1000 / 60); // 21 seconds in frames (Tripled)
     const HEART_COLOR = '#e74c3c'; // Red for heart
+    const BOT_TAUNTS = [ "Ha!", "Too slow!", "Can't jump?", "Get outta here!", "Boop!", "Error! Error!", "Rust bucket!" ]; // Added
+    let currentTaunt = null; // Added: Holds the taunt to display at the top
+    let tauntDisplayTimer = 0; // Added: Timer to fade out taunt
+    const TAUNT_DISPLAY_DURATION = 120; // Frames (2 seconds)
 
     // Constants
     const CANVAS_WIDTH = canvas.width;
@@ -131,13 +135,29 @@ document.addEventListener('DOMContentLoaded', () => {
         update(currentGameSpeed, deltaTime) {
             super.update(currentGameSpeed, deltaTime); // Call base update for movement
             // Animate height for ripple effect
-            this.height = this.baseHeight + Math.sin(this.animationTimer) * this.rippleAmplitude;
-            this.y = CANVAS_HEIGHT - this.height - GROUND_HEIGHT; // Adjust y based on new height
+            // this.height = this.baseHeight + Math.sin(this.animationTimer) * this.rippleAmplitude;
+            // this.y = CANVAS_HEIGHT - this.height - GROUND_HEIGHT; // Adjust y based on new height
+             // Keep y constant, wave is drawn relative to it
         }
 
         draw() {
+           // Use sine wave for top edge
             ctx.fillStyle = WATER_COLOR;
-            ctx.fillRect(this.x, this.y, this.width, this.height);
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y + this.height); // Start at bottom-left
+
+            const segments = 10; // Number of segments for the wave
+            for (let i = 0; i <= segments; i++) {
+                const segmentX = this.x + (this.width / segments) * i;
+                // Calculate wave height using sine wave based on position and time
+                const waveOffset = Math.sin(this.animationTimer + (i / segments) * Math.PI * 2) * this.rippleAmplitude;
+                const segmentY = this.y + waveOffset; // y is the baseline height
+                ctx.lineTo(segmentX, segmentY);
+            }
+
+            ctx.lineTo(this.x + this.width, this.y + this.height); // Line to bottom-right
+            ctx.closePath(); // Close path back to bottom-left
+            ctx.fill();
         }
     }
 
@@ -150,10 +170,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const width = PLAYER_WIDTH * randomFactor;
             const height = PLAYER_HEIGHT * randomFactor;
             const x = CANVAS_WIDTH;
-            const baseY = CANVAS_HEIGHT - height - GROUND_HEIGHT - 5; // Start slightly above ground
+            const baseY = CANVAS_HEIGHT - height - GROUND_HEIGHT - 5;
             super(x, baseY, width, height);
             this.baseY = baseY;
             this.bobAmplitude = 5;
+            // Assign random taunt to global variable
+            currentTaunt = BOT_TAUNTS[Math.floor(Math.random() * BOT_TAUNTS.length)];
+            tauntDisplayTimer = TAUNT_DISPLAY_DURATION; // Reset timer when new taunt appears
         }
 
         update(currentGameSpeed, deltaTime) {
@@ -206,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 2;
             const browLength = eyeRadius * 1.5;
-            const browAngle = -Math.PI / 6; // Angled down
             // Left brow
             ctx.beginPath();
             ctx.moveTo(this.x + eyeOffsetX - browLength * 0.6, this.y + eyeOffsetY - eyeRadius * 0.8);
@@ -377,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         draw() {
-            ctx.save();
+            ctx.save(); // Save context state
 
              // Glow effect if invincible
             if (this.isInvincible) {
@@ -394,35 +416,81 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.scale(scaleX, scaleY);
             ctx.translate(-(this.x + this.width / 2), -(this.y + this.height / 2));
 
-            // Body (Rounded Rectangle)
+            // --- Draw Cute Bot --- 
+            const bodyX = this.x;
+            const bodyY = this.y;
+            const bodyW = this.width;
+            const bodyH = this.height;
+
+            // Body (Blue Rounded Rectangle)
             ctx.fillStyle = '#3498db';
             const cornerRadius = 10;
             ctx.beginPath();
-            ctx.moveTo(this.x + cornerRadius, this.y);
-            ctx.lineTo(this.x + this.width - cornerRadius, this.y);
-            ctx.quadraticCurveTo(this.x + this.width, this.y, this.x + this.width, this.y + cornerRadius);
-            ctx.lineTo(this.x + this.width, this.y + this.height - cornerRadius);
-            ctx.quadraticCurveTo(this.x + this.width, this.y + this.height, this.x + this.width - cornerRadius, this.y + this.height);
-            ctx.lineTo(this.x + cornerRadius, this.y + this.height);
-            ctx.quadraticCurveTo(this.x, this.y + this.height, this.x, this.y + this.height - cornerRadius);
-            ctx.lineTo(this.x, this.y + cornerRadius);
-            ctx.quadraticCurveTo(this.x, this.y, this.x + cornerRadius, this.y);
+            ctx.moveTo(bodyX + cornerRadius, bodyY);
+            ctx.lineTo(bodyX + bodyW - cornerRadius, bodyY);
+            ctx.quadraticCurveTo(bodyX + bodyW, bodyY, bodyX + bodyW, bodyY + cornerRadius);
+            ctx.lineTo(bodyX + bodyW, bodyY + bodyH - cornerRadius);
+            ctx.quadraticCurveTo(bodyX + bodyW, bodyY + bodyH, bodyX + bodyW - cornerRadius, bodyY + bodyH);
+            ctx.lineTo(bodyX + cornerRadius, bodyY + bodyH);
+            ctx.quadraticCurveTo(bodyX, bodyY + bodyH, bodyX, bodyY + bodyH - cornerRadius);
+            ctx.lineTo(bodyX, bodyY + cornerRadius);
+            ctx.quadraticCurveTo(bodyX, bodyY, bodyX + cornerRadius, bodyY);
             ctx.closePath();
             ctx.fill();
 
-            // Eyes drawing ...
-             const eyeRadius = 5;
-            const eyeOffsetX = 12;
-            const eyeOffsetY = 15;
-            const pupilRadius = 2;
+            // Antenna
+            const antennaBaseX = bodyX + bodyW / 2;
+            const antennaBaseY = bodyY;
+            const antennaHeight = 12;
+            const antennaBallRadius = 4;
+            ctx.strokeStyle = '#555'; // Dark grey
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(antennaBaseX, antennaBaseY);
+            ctx.lineTo(antennaBaseX, antennaBaseY - antennaHeight);
+            ctx.stroke();
+            ctx.fillStyle = '#e74c3c'; // Red ball
+            ctx.beginPath();
+            ctx.arc(antennaBaseX, antennaBaseY - antennaHeight, antennaBallRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes (Larger with highlight)
+            const eyeRadius = bodyW * 0.18; // Slightly larger radius
+            const eyeOffsetX = bodyW * 0.28;
+            const eyeOffsetY = bodyH * 0.4;
+            const pupilRadius = eyeRadius * 0.4;
+            const highlightRadius = pupilRadius * 0.4;
+            const highlightOffsetX = pupilRadius * 0.3;
+            const highlightOffsetY = -pupilRadius * 0.3;
+
+            // Left Eye
             ctx.fillStyle = 'white';
-            ctx.beginPath(); ctx.arc(this.x + eyeOffsetX, this.y + eyeOffsetY, eyeRadius, 0, Math.PI * 2); ctx.fill(); // Left white
+            ctx.beginPath(); ctx.arc(bodyX + eyeOffsetX, bodyY + eyeOffsetY, eyeRadius, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = 'black';
-            ctx.beginPath(); ctx.arc(this.x + eyeOffsetX, this.y + eyeOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill(); // Left pupil
+            ctx.beginPath(); ctx.arc(bodyX + eyeOffsetX, bodyY + eyeOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = 'white'; // Highlight
+            ctx.beginPath(); ctx.arc(bodyX + eyeOffsetX + highlightOffsetX, bodyY + eyeOffsetY + highlightOffsetY, highlightRadius, 0, Math.PI * 2); ctx.fill();
+
+            // Right Eye
             ctx.fillStyle = 'white';
-            ctx.beginPath(); ctx.arc(this.x + this.width - eyeOffsetX, this.y + eyeOffsetY, eyeRadius, 0, Math.PI * 2); ctx.fill(); // Right white
+            ctx.beginPath(); ctx.arc(bodyX + bodyW - eyeOffsetX, bodyY + eyeOffsetY, eyeRadius, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = 'black';
-            ctx.beginPath(); ctx.arc(this.x + this.width - eyeOffsetX, this.y + eyeOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill(); // Right pupil
+            ctx.beginPath(); ctx.arc(bodyX + bodyW - eyeOffsetX, bodyY + eyeOffsetY, pupilRadius, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = 'white'; // Highlight
+            ctx.beginPath(); ctx.arc(bodyX + bodyW - eyeOffsetX + highlightOffsetX, bodyY + eyeOffsetY + highlightOffsetY, highlightRadius, 0, Math.PI * 2); ctx.fill();
+
+
+            // Wheels
+            const wheelRadius = bodyW * 0.15;
+            const wheelOffsetY = bodyH - wheelRadius;
+            const wheelOffsetX = bodyW * 0.2;
+            ctx.fillStyle = '#555'; // Dark grey wheels
+            ctx.beginPath();
+            ctx.arc(bodyX + wheelOffsetX, bodyY + wheelOffsetY, wheelRadius, 0, Math.PI * 2); // Left wheel
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(bodyX + bodyW - wheelOffsetX, bodyY + wheelOffsetY, wheelRadius, 0, Math.PI * 2); // Right wheel
+            ctx.fill();
 
 
             ctx.restore(); // Restore context state (removes shadow/scale)
@@ -511,6 +579,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Added: Global listener for R key on game over
+    document.addEventListener('keydown', (e) => {
+        if ((e.key === 'r' || e.key === 'R') && currentScreenState === 'gameOver') {
+             console.log("'R' key pressed, restarting game.");
+            startGame();
+        }
+    });
+
     // --- Game Functions ---
 
     function setupStartScreen() {
@@ -528,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Hide the static HTML title
         const h1Title = startScreen.querySelector('h1');
-        if(h1Title) h1Title.style.display = 'none';
+        if(h1Title) h1Title.style.display = 'none'; // Keep this JIC, but H1 removed
 
          // Make sure high scores are visible initially if start screen overlays canvas
         loadHighScores();
@@ -610,33 +686,56 @@ document.addEventListener('DOMContentLoaded', () => {
         // Typing effect
         const targetLength = titleText.length;
         let currentLength = Math.floor(titleAnimationTimer / TITLE_TYPE_SPEED);
-        if (currentLength > targetLength) {
+        let typingFinished = false;
+        if (currentLength >= targetLength) {
             currentLength = targetLength;
+            typingFinished = true;
         }
         animatedTitleText = titleText.substring(0, currentLength);
 
         // Calculate position (centered)
-        const fontSize = 60;
-        ctx.font = `${fontSize}px 'Courier New', Courier, monospace`;
-        ctx.fillStyle = '#0f0'; // Green color for code style
+        const fontSize = 72; // Slightly larger font
+        ctx.font = `bold ${fontSize}px 'Orbitron', Courier, monospace`; // Futuristic font (add fallback)
         ctx.textAlign = 'center';
-        const textWidth = ctx.measureText(animatedTitleText).width;
         const x = CANVAS_WIDTH / 2;
         const y = CANVAS_HEIGHT / 3; // Position title higher up
+        const textMetrics = ctx.measureText(animatedTitleText);
+        const textWidth = textMetrics.width;
+
+        // Create gradient (Green to Light Green/Cyan)
+        const gradient = ctx.createLinearGradient(x - textWidth / 2, y - fontSize / 2, x + textWidth / 2, y + fontSize / 2);
+        gradient.addColorStop(0, '#0f0'); // Bright Green
+        gradient.addColorStop(1, '#0ff'); // Cyan
+        ctx.fillStyle = gradient;
 
          // Glow effect
         ctx.shadowColor = '#0f0';
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 20;
 
         ctx.fillText(animatedTitleText, x, y);
 
-        // Blinking cursor (only if typing not finished)
-        if (currentLength < targetLength) {
+        // Blinking cursor or shimmer effect
+        if (!typingFinished) {
             const cursorVisible = Math.floor(titleAnimationTimer / TITLE_CURSOR_BLINK_RATE) % 2 === 0;
             if (cursorVisible) {
-                ctx.fillText('_', x + textWidth / 2 + 5, y);
+                // Save current shadow settings
+                const currentShadowColor = ctx.shadowColor;
+                const currentShadowBlur = ctx.shadowBlur;
+                ctx.shadowColor = 'transparent'; // No shadow for cursor
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#0f0'; // Cursor color
+                ctx.fillText('_', x + textWidth / 2 + 10, y);
+                // Restore shadow settings
+                ctx.shadowColor = currentShadowColor;
+                ctx.shadowBlur = currentShadowBlur;
             }
+        } else {
+             // Subtle shimmer/jitter effect after typing
+            const shimmerOffset = Math.sin(titleAnimationTimer * 0.2) * 1.5;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)'; // White overlay
+             ctx.fillText(animatedTitleText, x + shimmerOffset, y + shimmerOffset);
         }
+
          // Reset shadow for other drawings
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
@@ -685,7 +784,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
 
             case 'game':
-                currentFrameSpeed = updateScoreAndSpeed(deltaTime); // Update score and get current effective speed
+                currentFrameSpeed = updateScoreAndSpeed(deltaTime);
                 const darknessLevel = updateBackgroundColor();
                 ctx.fillStyle = currentBackgroundColor;
                 ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -696,16 +795,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.fillStyle = '#2ecc71';
                 ctx.fillRect(0, CANVAS_HEIGHT - GROUND_HEIGHT, CANVAS_WIDTH, GROUND_HEIGHT);
                 backgroundElements.forEach(element => {
-                    element.update(currentFrameSpeed * 0.5 * deltaTime); // Use currentFrameSpeed
+                    element.update(currentFrameSpeed * 0.5 * deltaTime);
                     element.draw();
                 });
                 player.update(deltaTime);
                 player.draw();
-                handleSpawning(deltaTime, score); // Pass score for difficulty
+                handleSpawning(deltaTime, score);
+
+                // Draw Obstacles (taunts drawn separately now)
                 obstacles.forEach(obstacle => {
-                    obstacle.update(currentFrameSpeed, deltaTime); // Use currentFrameSpeed
+                    obstacle.update(currentFrameSpeed, deltaTime);
                     obstacle.draw();
                 });
+
+                 // Draw the current taunt at the top
+                drawCurrentTaunt(deltaTime);
+
                 obstacles = obstacles.filter(obstacle => obstacle.x + obstacle.width > 0);
                 handleCollisions();
                 break;
@@ -732,7 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Hide the static HTML title
         const h2Title = gameOverScreen.querySelector('h2');
-        if(h2Title) h2Title.style.display = 'none';
+        if(h2Title) h2Title.style.display = 'none'; // Keep this JIC, but H2 removed
     }
 
     // --- Helper Functions (stubs for now) ---
@@ -1019,6 +1124,27 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.lineTo(k + d / 4, l + d * 3/4);
             ctx.quadraticCurveTo(k, l + d / 2, k, l + d / 4);
             ctx.fill();
+        }
+    }
+
+    // Added: Global listener for R key on game over
+    function drawCurrentTaunt(deltaTime) {
+        if (currentTaunt && tauntDisplayTimer > 0) {
+            tauntDisplayTimer -= deltaTime;
+            const alpha = Math.min(1, tauntDisplayTimer / (TAUNT_DISPLAY_DURATION / 2)); // Fade out
+
+            ctx.font = 'bold 18px sans-serif';
+            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`; // White, fading out
+            ctx.textAlign = 'center';
+            ctx.shadowColor = `rgba(0, 0, 0, ${alpha * 0.7})`;
+            ctx.shadowBlur = 3;
+            ctx.fillText(currentTaunt, CANVAS_WIDTH / 2, 30); // Draw at top-center
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+
+            if (tauntDisplayTimer <= 0) {
+                currentTaunt = null; // Clear taunt after timer expires
+            }
         }
     }
 
