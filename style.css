@@ -3,49 +3,158 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
     background-color: #f0f0f0; /* Light grey background */
     font-family: sans-serif;
-    margin: 0;
 }
 
 #game-container {
     text-align: center;
     position: relative; /* Needed for absolute positioning of score */
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 canvas {
-    border: 1px solid black;
-    background-color: #87CEEB; /* Initial sky blue background */
-    display: block; /* Prevents extra space below canvas */
-    margin: 0 auto; /* Center canvas if container is wider */
+    border: none;
+    background-color: #87CEEB; /* Initial sky blue background - less relevant now */
+    display: block;
+    width: 100%; /* Fill container width */
+    height: 100%; /* Fill container height */
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 #start-screen, #game-over-screen {
-    margin-top: 20px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    display: inline-block; /* Shrink to content */
+    padding: 20px 30px; /* Adjusted padding */
+    border: none; /* Remove border */
+    background-color: rgba(44, 62, 80, 0.7); /* Darker semi-transparent background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 5%; /* Position near bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 15px; /* More rounded */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    z-index: 10;
+    max-width: 90%;
+    min-width: 280px; /* Slightly smaller min-width */
+    color: #ecf0f1; /* Light text color for contrast */
 }
 
 #start-screen label,
-#start-screen input,
-#start-screen button {
-    margin: 5px;
-    padding: 8px;
-    font-size: 1em;
+#start-screen input {
+    margin: 8px 0; /* Adjust vertical margin */
+    padding: 10px;
+    font-size: 1.1em;
+    width: 80%; /* Make input wider */
+    box-sizing: border-box; /* Include padding in width */
+    text-align: center; /* Center label text */
 }
 
-#game-over-screen h2 {
-    color: red;
+#start-screen input {
+     border-radius: 5px;
+     border: 1px solid #ccc;
+}
+
+#start-screen button#startButton { /* More specific selector */
+    margin-top: 15px;
+    padding: 12px 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: #2ecc71; /* Green color */
+    color: white;
+    border: none;
+    border-radius: 25px; /* Rounded corners */
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5); /* Initial subtle glow */
+    animation: pulseGlow 2s infinite alternate; /* Add pulsing glow animation */
+}
+
+#start-screen button#startButton:hover {
+    background-color: #27ae60; /* Darker green on hover */
+    transform: scale(1.05);
+}
+
+#start-screen button#startButton:active {
+    transform: scale(1.02);
+}
+
+/* Pulsing Glow Animation */
+@keyframes pulseGlow {
+    from {
+        box-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
+    }
+    to {
+        box-shadow: 0 0 18px rgba(46, 204, 113, 0.8);
+    }
+}
+
+#game-over-screen p {
+    font-size: 1.3em;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+#game-over-screen h3 {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: #bdc3c7; /* Lighter grey for subtitle */
 }
 
 #highScoresList {
     list-style: none;
     padding: 0;
-    text-align: left;
-    margin: 10px auto;
-    width: 150px;
+    text-align: center; /* Center high score text */
+    margin: 5px auto 15px auto; /* Adjusted margins */
+    width: 180px; /* Wider for names */
+    font-size: 1em;
+}
+
+#highScoresList li {
+    margin-bottom: 3px;
+    color: #f1c40f; /* Gold-ish color for scores */
+}
+
+#game-over-screen button {
+    padding: 10px 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 20px; /* Rounded buttons */
+    margin: 5px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+#playAgainButton {
+    background-color: #2ecc71; /* Green */
+    color: white;
+}
+
+#playAgainButton:hover {
+    background-color: #27ae60;
+    transform: scale(1.05);
+}
+
+#clearScoresButton {
+    background-color: #e74c3c; /* Red */
+    color: white;
+}
+
+#clearScoresButton:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
 }
 
 button {
@@ -65,4 +174,31 @@ button {
      background-color: rgba(0,0,0,0.3); /* Slight background for contrast */
      padding: 5px;
      border-radius: 5px;
+}
+
+#sound-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.3);
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: transform 0.2s ease;
+    z-index: 100;
+    user-select: none;
+}
+
+#sound-toggle:hover {
+    transform: scale(1.1);
+}
+
+.attribution {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #ecf0f1;
+    opacity: 0.8;
+    font-style: italic;
 } 
