@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Sound effects
     const sounds = {
-        jump: new Audio('sounds/jump.wav'),
+        jump: new Audio('sounds/smb_jump-small.wav'),
         gameOver: new Audio('sounds/smb_mariodie.wav'),
         powerUp: new Audio('sounds/smb_powerup.wav')
     };
