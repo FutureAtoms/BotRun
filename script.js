@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const HEART_COLOR = '#e74c3c'; // Red for heart
 
     // Constants
-    const GROUND_HEIGHT = 50; // Height of the ground area
+    const GROUND_HEIGHT = 80; // Increased from 50 to 80 - Height of the ground area
     const PLAYER_WIDTH = 40;
     const PLAYER_HEIGHT = 50;
     const PLAYER_X = 50; // Fixed X position for the player
@@ -1094,13 +1094,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.fillStyle = startGradient;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Draw ground
+                // Draw ground - start screen
                 ctx.fillStyle = '#2ecc71'; // Green ground
-                ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
+                ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT * 0.4); // Top 40% as grass
                 
                 // Draw dirt below ground
                 ctx.fillStyle = '#8B4513'; // Brown dirt
-                ctx.fillRect(0, canvas.height - GROUND_HEIGHT + 15, canvas.width, GROUND_HEIGHT);
+                ctx.fillRect(0, canvas.height - GROUND_HEIGHT + (GROUND_HEIGHT * 0.4), canvas.width, GROUND_HEIGHT * 0.6); // Bottom 60% as dirt
                 
                 // Draw animated clouds
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
@@ -1191,14 +1191,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     stars.forEach(star => star.draw(starOpacityMultiplier));
                 }
                 
-                // Draw ground
-                ctx.fillStyle = '#2ecc71';
+                // Draw ground - game state
                 if (groundSlipperiness > 0) {
                     // Make ground look wet/darker when slippery
                     const wetFactor = Math.min(0.6, groundSlipperiness);
                     ctx.fillStyle = `rgba(46, 204, 113, ${1 - wetFactor})`;
+                } else {
+                    ctx.fillStyle = '#2ecc71'; // Green ground
                 }
-                ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
+                ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT * 0.4); // Top 40% as grass
+                
+                // Draw dirt below ground
+                ctx.fillStyle = '#8B4513'; // Brown dirt
+                ctx.fillRect(0, canvas.height - GROUND_HEIGHT + (GROUND_HEIGHT * 0.4), canvas.width, GROUND_HEIGHT * 0.6); // Bottom 60% as dirt
                 
                 // Draw clouds/environment
                 backgroundElements.forEach(element => {
