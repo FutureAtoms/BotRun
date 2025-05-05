@@ -40,7 +40,7 @@ canvas {
     align-items: center;
     justify-content: center;
     position: absolute;
-    bottom: 5%; /* Position near bottom */
+    bottom: 105px; /* Position above bottom buffer */
     left: 50%;
     transform: translateX(-50%);
     border-radius: 15px; /* More rounded */

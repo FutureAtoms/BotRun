@@ -106,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const HEART_COLOR = '#e74c3c'; // Red for heart
 
     // Constants
-    const GROUND_HEIGHT = 80; // Increased from 50 to 80 - Height of the ground area
+    const GROUND_HEIGHT = 100; // Increased from 80 to 100 - Height of the ground area
+    const BOTTOM_BUFFER = 100; // Added buffer from bottom for all elements
     const PLAYER_WIDTH = 40;
     const PLAYER_HEIGHT = 50;
     const PLAYER_X = 50; // Fixed X position for the player
@@ -195,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const width = Math.random() * 40 + 40; // Reduced from 60+70 to 40+40
             const height = Math.random() * 15 + 20; // Slightly higher water
             const x = canvas.width;
-            const y = canvas.height - height - GROUND_HEIGHT; // On the ground
+            const y = canvas.height - height - GROUND_HEIGHT - BOTTOM_BUFFER; // Added bottom buffer
             super(x, y, width, height);
             this.baseHeight = height; // Store original height for animation
             this.rippleAmplitude = 6; // Increased wave amplitude
@@ -222,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.beginPath();
             
             // Start at bottom left of water section
-            ctx.moveTo(this.x, canvas.height - GROUND_HEIGHT);
+            ctx.moveTo(this.x, canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER);
             
             // Draw the top wavy part
             const pointWidth = this.width / (this.wavePoints - 1);
@@ -239,8 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Complete the shape by connecting to bottom right then bottom left
-            ctx.lineTo(this.x + this.width, canvas.height - GROUND_HEIGHT);
-            ctx.lineTo(this.x, canvas.height - GROUND_HEIGHT);
+            ctx.lineTo(this.x + this.width, canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER);
+            ctx.lineTo(this.x, canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER);
             ctx.closePath();
             ctx.fill();
             
@@ -272,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const width = PLAYER_WIDTH * randomFactor;
             const height = PLAYER_HEIGHT * randomFactor;
             const x = canvas.width;
-            const baseY = canvas.height - height - GROUND_HEIGHT - 5; // Start slightly above ground
+            const baseY = canvas.height - height - GROUND_HEIGHT - BOTTOM_BUFFER - 5; // Added bottom buffer
             super(x, baseY, width, height);
             this.baseY = baseY;
             this.bobAmplitude = 5;
@@ -348,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const width = Math.random() * 30 + 25; // Slightly wider for mountain appearance
             const height = Math.random() * 25 + 30; // Slightly taller for mountain appearance
             const x = canvas.width;
-            const y = canvas.height - height - GROUND_HEIGHT; // On the ground
+            const y = canvas.height - height - GROUND_HEIGHT - BOTTOM_BUFFER; // Added bottom buffer
             super(x, y, width, height);
             
             // Snow cap variables
@@ -466,9 +467,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const size = Math.random() * 15 + 20;
             const x = canvas.width;
             // Position higher up, BUT within jump range
-            const playerMaxReach = canvas.height - GROUND_HEIGHT - PLAYER_HEIGHT - MAX_JUMP_HEIGHT_ESTIMATE;
+            const playerMaxReach = canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER - PLAYER_HEIGHT - MAX_JUMP_HEIGHT_ESTIMATE;
             const minY = Math.max(30, playerMaxReach); // Don't go below 30px from top, ensure reachable
-            const maxY = canvas.height - GROUND_HEIGHT - size - 50; // Ensure it's well above ground
+            const maxY = canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER - size - 50; // Ensure it's well above ground
             const y = Math.random() * (maxY - minY) + minY; // Random Y within the calculated range
             super(x, y, size, size);
             
@@ -536,7 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.y += this.velocityY * deltaTime;
 
             // Ground collision (bottom of ball)
-            const groundLevel = canvas.height - GROUND_HEIGHT - this.radius;
+            const groundLevel = canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER - this.radius;
             if (this.y > groundLevel) {
                 this.y = groundLevel;
                 this.velocityY *= -this.elasticity; // Reverse and dampen velocity
@@ -606,7 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.width = PLAYER_WIDTH;
             this.height = PLAYER_HEIGHT;
             this.x = PLAYER_X;
-            this.y = canvas.height - this.height - GROUND_HEIGHT;
+            this.y = canvas.height - this.height - GROUND_HEIGHT - BOTTOM_BUFFER; // Added bottom buffer
             this.velocityY = 0;
             this.isGrounded = true;
             this.jumpScale = 1; // For visual jump effect
@@ -786,7 +787,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Ground collision
-            const groundLevel = canvas.height - this.height - GROUND_HEIGHT;
+            const groundLevel = canvas.height - this.height - GROUND_HEIGHT - BOTTOM_BUFFER;
             if (this.y > groundLevel) {
                 this.y = groundLevel;
                 this.velocityY = 0;
@@ -1096,11 +1097,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Draw ground - start screen
                 ctx.fillStyle = '#2ecc71'; // Green ground
-                ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT * 0.4); // Top 40% as grass
+                ctx.fillRect(0, canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER, canvas.width, GROUND_HEIGHT * 0.4); // Top 40% as grass
                 
                 // Draw dirt below ground
                 ctx.fillStyle = '#8B4513'; // Brown dirt
-                ctx.fillRect(0, canvas.height - GROUND_HEIGHT + (GROUND_HEIGHT * 0.4), canvas.width, GROUND_HEIGHT * 0.6); // Bottom 60% as dirt
+                ctx.fillRect(0, canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER + (GROUND_HEIGHT * 0.4), canvas.width, GROUND_HEIGHT * 0.6); // Bottom 60% as dirt
+
+                // Draw bottom buffer area
+                ctx.fillStyle = '#2c3e50'; // Dark color for buffer
+                ctx.fillRect(0, canvas.height - BOTTOM_BUFFER, canvas.width, BOTTOM_BUFFER);
                 
                 // Draw animated clouds
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
@@ -1136,7 +1141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Draw enemy bot
                 const enemySize = PLAYER_WIDTH * 0.8;
-                drawEnemyBot(canvas.width - enemyBotPosition, canvas.height - GROUND_HEIGHT - enemySize, enemySize, enemySize);
+                drawEnemyBot(canvas.width - enemyBotPosition, canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER - enemySize, enemySize, enemySize);
                 
                 // Draw the animated player bot in the center
                 drawAnimatedPlayerBot(canvas.width / 2, canvas.height / 2, 120, 150, botBounceHeight, botRotation);
@@ -1199,11 +1204,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     ctx.fillStyle = '#2ecc71'; // Green ground
                 }
-                ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT * 0.4); // Top 40% as grass
+                ctx.fillRect(0, canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER, canvas.width, GROUND_HEIGHT * 0.4); // Top 40% as grass
                 
                 // Draw dirt below ground
                 ctx.fillStyle = '#8B4513'; // Brown dirt
-                ctx.fillRect(0, canvas.height - GROUND_HEIGHT + (GROUND_HEIGHT * 0.4), canvas.width, GROUND_HEIGHT * 0.6); // Bottom 60% as dirt
+                ctx.fillRect(0, canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER + (GROUND_HEIGHT * 0.4), canvas.width, GROUND_HEIGHT * 0.6); // Bottom 60% as dirt
+                
+                // Draw bottom buffer area
+                ctx.fillStyle = '#2c3e50'; // Dark color for buffer
+                ctx.fillRect(0, canvas.height - BOTTOM_BUFFER, canvas.width, BOTTOM_BUFFER);
                 
                 // Draw clouds/environment
                 backgroundElements.forEach(element => {
@@ -1540,9 +1549,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const size = 25;
             const x = canvas.width;
             // Spawn within jump range, similar to FlyingObstacle
-            const playerMaxReach = canvas.height - GROUND_HEIGHT - PLAYER_HEIGHT - MAX_JUMP_HEIGHT_ESTIMATE;
+            const playerMaxReach = canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER - PLAYER_HEIGHT - MAX_JUMP_HEIGHT_ESTIMATE;
             const minY = Math.max(30, playerMaxReach);
-            const maxY = canvas.height - GROUND_HEIGHT - size - 50;
+            const maxY = canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER - size - 50;
             const y = Math.random() * (maxY - minY) + minY;
             super(x, y, size, size);
             this.isPowerUp = true; // Flag to identify it in collision check
@@ -1980,7 +1989,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Draw puddle on ground
                 ctx.fillStyle = `rgba(70, 130, 180, ${0.3 * groundSlipperiness})`;
                 ctx.beginPath();
-                ctx.ellipse(puddleX, canvas.height - GROUND_HEIGHT + 5, puddleWidth, puddleHeight, 0, 0, Math.PI * 2);
+                ctx.ellipse(puddleX, canvas.height - GROUND_HEIGHT - BOTTOM_BUFFER + 5, puddleWidth, puddleHeight, 0, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
